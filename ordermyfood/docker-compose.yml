@@ -1,0 +1,73 @@
+version: '3'
+services:
+  ordermyfood:
+    image: com.mindtree.omf/microservice-docker-ordermyfood:0.0.1-SNAPSHOT
+    container_name: ordermyfood
+    ports:
+      - 7001:7001
+    depends_on:
+      - sqlserver
+  sqlserver:
+    image: mysql:latest
+    container_name: sqlserver
+    expose:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-pass
+      - MYSQL_DATABASE=OMF
+  configserver:
+    image: com.mindtree.omf/microservice-docker-configserver:0.0.1-SNAPSHOT
+    depends_on:
+      - ordermyfood
+    ports:
+      - 7005:7005
+    volumes:
+      - ./config-data:/tmp
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://ordermyfood:7001/eureka
+  searchservice:
+    image: com.mindtree.omf/microservice-docker-searchservice:0.0.1-SNAPSHOT
+    container_name: searchservice
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://ordermyfood:7001/eureka
+    restart: on-failure
+    depends_on:
+      - configserver
+      - ordermyfood
+    ports:
+      - 7003:7003
+  gatewayserver:
+    image: com.mindtree.omf/microservice-docker-gatewayserver:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+         -DEUREKA_SERVER=http://ordermyfood:7001/eureka
+    restart: on-failure
+    depends_on:
+      - configserver
+      - ordermyfood
+    ports:
+      - 7070:7070
+  orderservice:
+    image: com.mindtree.omf/microservice-docker-ordermanagement:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://ordermyfood:7001/eureka
+    restart: on-failure
+    depends_on:
+      - configserver
+      - ordermyfood
+    ports:
+      - 7002:7002
+  userservice:
+    image: com.mindtree.omf/microservice-docker-usermanagement:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://ordermyfood:7001/eureka
+    restart: on-failure
+    depends_on:
+      - configserver
+      - ordermyfood
+    ports:
+      - 7004:7004

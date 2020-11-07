@@ -1,0 +1,32 @@
+package com.mindtree.ordermyfood.usermanagement.exception;
+
+public class UserMangementException extends Exception{
+
+	public UserMangementException() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public UserMangementException(String message, Throwable cause, boolean enableSuppression,
+			boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+		// TODO Auto-generated constructor stub
+	}
+
+	public UserMangementException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
+
+	public UserMangementException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
+
+	public UserMangementException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
+
+	
+}
